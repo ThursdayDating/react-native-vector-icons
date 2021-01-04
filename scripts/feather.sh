@@ -3,6 +3,8 @@
 # Feather temporary assets output directory
 FEATHER_DIR="Feather"
 FEATHER_JS="Feather.js"
+FEATHER_ORIGINAL_STROKE_WIDTH="2"
+FEATHER_CORRECTED_STROKE_WIDTH="1"
 
 check_nodejs() {
   NODE=`which node`
@@ -32,6 +34,13 @@ run_generation() {
   print "Cleaning older installations..."
   rm -rf ${FEATHER_DIR} || true
   if [ -d "${FEATHER_DIR}" ]; then show_error "Can't remove Feather temp directory."; fi
+  success "OK"
+
+  print "Changing stroke-width..."
+  find ./node_modules/feather-icons/dist/icons \
+    -type f \
+    -name "*.svg" \
+    -exec sed -i "s/stroke-width=\"${FEATHER_ORIGINAL_STROKE_WIDTH}\"/stroke-width=\"${FEATHER_CORRECTED_STROKE_WIDTH}\"/g" {} \;
   success "OK"
 
   print "Using docker rfbezerra/svg-to-ttf to generate font..."
